@@ -20,14 +20,12 @@ function App() {
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameover, setGameover] = useState(true);
+  const [difficulty, setDifficulty] = useState(Difficulty.EASY);
 
   const startTrivia = async () => {
     setLoading(true);
     setGameover(false);
-    const newQuesstions = await fetchQuizQuestions(
-      TOTAL_QUESTION,
-      Difficulty.EASY
-    );
+    const newQuesstions = await fetchQuizQuestions(TOTAL_QUESTION, difficulty);
     setQuestions(newQuesstions);
     setScore(0);
     setUserAnswers([]);
@@ -70,7 +68,40 @@ function App() {
         </button>
       ) : null}
 
+      {gameover || userAnswers.length === TOTAL_QUESTION ? (
+        <div className="difficullty">
+          <button
+            className="difficullty__btn"
+            onClick={() => {
+              setDifficulty(Difficulty.EASY);
+            }}
+          >
+            EASY
+          </button>
+          <button
+            className="difficullty__btn"
+            onClick={() => {
+              setDifficulty(Difficulty.MEDIUM);
+            }}
+          >
+            MEDIUM
+          </button>
+          <button
+            className="difficullty__btn"
+            onClick={() => {
+              setDifficulty(Difficulty.HARD);
+            }}
+          >
+            HARD
+          </button>
+        </div>
+      ) : null}
+
       {!gameover ? <p className="score">score: {score}</p> : null}
+
+      {userAnswers.length === TOTAL_QUESTION && (
+        <p className="end">Quiz finished and your score is {score}</p>
+      )}
 
       {loading && <p>loading question ....</p>}
       {!loading && !gameover && (
